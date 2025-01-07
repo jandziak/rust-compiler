@@ -29,35 +29,45 @@ impl VM {
     }
 
     pub fn run(&mut self) {
-    loop {
+        let mut to_continue = true;
+        while to_continue {
+            to_continue = self.run_opcode();
+        }
+    }
+    pub fn execute_once(&mut self) {
+        self.run_opcode();
+    }
+
+    fn run_opcode(&mut self) -> bool {
         if self.pc >= self.program.len() {
-            break;
+            return false;
         }
         match self.decode_opcode() {
             Opcode::LOAD => {
                 let register = self.next_8_bits() as usize;
                 let number = self.next_16_bits() as u16; 
                 self.registers[register] = number as i32;
-                continue;
-            }
+            },
             Opcode::HLT => {
                 println!("HLT encountered");
-                return;
+                return false
             },
             _ => {
-                println!("Unrecognized opcode found! Terminating!");
-                return;
+                println!("Unknown command");
+                return false
             }
-        }
-    }
-}
 
-fn decode_opcode(&mut self) -> Opcode {
-    let opcode = Opcode::from(self.program[self.pc]);
-    self.pc += 1;
-    return opcode;
-}
-    
+        }
+        return true
+    }
+
+
+    fn decode_opcode(&mut self) -> Opcode {
+        let opcode = Opcode::from(self.program[self.pc]);
+        self.pc += 1;
+        return opcode;
+    }
+        
 }
 
 mod tests {
