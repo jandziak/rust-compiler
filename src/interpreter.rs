@@ -2,7 +2,11 @@
 pub enum Opcode {
     HLT,
     IGL,
-    LOAD
+    LOAD, 
+    ADD, 
+    MUL, 
+    DIV,
+    SUB 
 }
 pub struct Instruction {
     opcode: Opcode
@@ -21,6 +25,10 @@ impl From<u8> for Opcode {
         match v {
             0 => return Opcode::HLT,
             1 => return Opcode::LOAD,
+            2 => return Opcode::ADD,
+            3 => return Opcode::SUB,
+            4 => return Opcode::MUL,
+            5 => return Opcode::DIV,
             _ => return Opcode::IGL
         }
     }
