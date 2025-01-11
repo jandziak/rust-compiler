@@ -3,7 +3,9 @@ use crate::interpreter::Opcode;
 pub struct VM {
   registers: [i32; 32],
   pc: usize,
-  program: Vec<u8>
+  program: Vec<u8>,
+  remainder: i32,
+  eq: bool,
 }
 
 impl VM {
@@ -12,6 +14,8 @@ impl VM {
             registers: [0; 32],
             program: vec![],
             pc: 0,
+            remainder: 0,
+            eq: false
         }
     }
     
@@ -75,6 +79,13 @@ impl VM {
                 let register2 = self.next_8_bits() as usize;
                 let number = (self.registers[register1] / self.registers[register2]) as u16; 
                 self.registers[register] = number as i32;
+                self.remainder = (self.registers[register1] / self.registers[register2]) as i32;
+            },
+            Opcode::EQ => {
+                let register1 = self.next_8_bits() as usize;
+                let register2 = self.next_8_bits() as usize;
+                let _ = self.next_8_bits() as usize;
+                self.eq = (self.registers[register1] == self.registers[register2]) as bool
             },
             Opcode::HLT => {
                 println!("HLT encountered");
@@ -168,5 +179,14 @@ mod tests {
         test_vm.program = vec![1,0,1,244];
         test_vm.run();
         assert_eq!(test_vm.registers[0],500)
+    }
+
+    #[test]
+    fn test_opcode_eq() {
+        let mut test_vm = VM::new();
+        let test_bytes = vec![1,1,0,10,1,2,0,10,6,1,2,0];
+        test_vm.program = test_bytes;
+        test_vm.run();
+        assert_eq!(test_vm.eq, true);
     }
 }
