@@ -9,7 +9,8 @@ pub enum Opcode {
     SUB,
     EQ,
     JMP,
-    JEQ
+    JMPF,
+    JMPB
 
 }
 pub struct Instruction {
@@ -35,7 +36,8 @@ impl From<u8> for Opcode {
             5 => return Opcode::DIV,
             6 => return Opcode::EQ,
             7 => return Opcode::JMP,
-            8 => return Opcode::JEQ,
+            8 => return Opcode::JMPF,
+            9 => return Opcode::JMPB,
             _ => return Opcode::IGL
         }
     }
